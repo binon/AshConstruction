@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Builder Invoice App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h2>Daily Invoice Entry</h2>
+  <form id="invoiceForm">
+    <input type="date" name="date" required><br>
+    <input type="text" name="client" placeholder="Client Name" required><br>
+    <textarea name="description" placeholder="Work Description" required></textarea><br>
+    <input type="number" name="amount" placeholder="Amount" required step="0.01"><br>
+    <button type="submit">Submit</button>
+  </form>
+  <p id="response"></p>
+
+  <script>
+    const form = document.getElementById("invoiceForm");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const data = new URLSearchParams(new FormData(form));
+
+      fetch("https://script.google.com/macros/s/AKfycbzJY-vfHNj_4LQ3vwy443cyOX9pqsxZxEdzo1RV2cwNP2sqvXBVIXUhzl8Y2ogmODWW/exec", {
+        method: "POST",
+        body: data.toString()
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "success") {
+          document.getElementById("response").textContent = "Invoice saved!";
+          form.reset();
+        } else {
+          document.getElementById("response").textContent = "Error saving: " + res.message;
+        }
+      })
+      .catch(err => {
+        document.getElementById("response").textContent = "Network error: " + err.message;
+      });
+    });
+  </script>
+</body>
+</html>
