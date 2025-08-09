@@ -1,44 +1,585 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Builder Invoice App</title>
+  <title>AshConstruction - Invoice Entry System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 3px solid #007bff;
+      padding-bottom: 20px;
+    }
+    
+    .header h1 {
+      color: #007bff;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+    
+    .form-section {
+      margin-bottom: 25px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fafafa;
+    }
+    
+    .form-section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0,123,255,0.3);
+    }
+    
+    .line-items {
+      margin: 20px 0;
+    }
+    
+    .line-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: end;
+      flex-wrap: wrap;
+    }
+    
+    .line-item input {
+      flex: 1;
+      min-width: 100px;
+    }
+    
+    .remove-item {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .add-item {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+    
+    .summary {
+      background: #e9ecef;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .summary-row.total {
+      font-weight: bold;
+      font-size: 18px;
+      border-top: 2px solid #007bff;
+      padding-top: 10px;
+      margin-top: 15px;
+    }
+    
+    .file-upload {
+      border: 2px dashed #007bff;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      background: #f8f9fa;
+    }
+    
+    .file-upload input[type="file"] {
+      margin: 10px 0;
+    }
+    
+    .submit-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+    }
+    
+    .submit-btn:hover {
+      background: #0056b3;
+    }
+    
+    #response {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    @media (max-width: 600px) {
+      .form-row {
+        flex-direction: column;
+      }
+      
+      .line-item {
+        flex-direction: column;
+      }
+      
+      .container {
+        padding: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h2>Daily Invoice Entry</h2>
-  <form id="invoiceForm">
-    <input type="date" name="date" required><br>
-    <input type="text" name="client" placeholder="Client Name" required><br>
-    <textarea name="description" placeholder="Work Description" required></textarea><br>
-    <input type="number" name="amount" placeholder="Amount" required step="0.01"><br>
-    <button type="submit">Submit</button>
-  </form>
-  <p id="response"></p>
+  <div class="container">
+    <div class="header">
+      <h1>🏗️ AshConstruction</h1>
+      <p>Professional Invoice Entry System</p>
+    </div>
+    
+    <form id="invoiceForm">
+      <!-- Invoice Header Section -->
+      <div class="form-section">
+        <h3>📋 Invoice Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="invoiceNumber">Invoice Number *</label>
+            <input type="text" id="invoiceNumber" name="invoiceNumber" required placeholder="INV-001">
+          </div>
+          <div class="form-group">
+            <label for="invoiceDate">Invoice Date *</label>
+            <input type="date" id="invoiceDate" name="invoiceDate" required>
+          </div>
+          <div class="form-group">
+            <label for="dueDate">Due Date</label>
+            <input type="date" id="dueDate" name="dueDate">
+          </div>
+        </div>
+      </div>
+
+      <!-- Client Information Section -->
+      <div class="form-section">
+        <h3>👤 Client Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientName">Client Name *</label>
+            <input type="text" id="clientName" name="clientName" required placeholder="Client Company Name">
+          </div>
+          <div class="form-group">
+            <label for="clientContact">Contact Person</label>
+            <input type="text" id="clientContact" name="clientContact" placeholder="John Doe">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientEmail">Email</label>
+            <input type="email" id="clientEmail" name="clientEmail" placeholder="client@example.com">
+          </div>
+          <div class="form-group">
+            <label for="clientPhone">Phone</label>
+            <input type="tel" id="clientPhone" name="clientPhone" placeholder="+1 (555) 123-4567">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="billingAddress">Billing Address</label>
+            <textarea id="billingAddress" name="billingAddress" rows="3" placeholder="Street Address, City, State, ZIP"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Information Section -->
+      <div class="form-section">
+        <h3>🏠 Project Details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="projectName">Project Name</label>
+            <input type="text" id="projectName" name="projectName" placeholder="Kitchen Renovation">
+          </div>
+          <div class="form-group">
+            <label for="projectAddress">Project Address</label>
+            <input type="text" id="projectAddress" name="projectAddress" placeholder="123 Main St, City, State">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="projectDescription">Project Description</label>
+            <textarea id="projectDescription" name="projectDescription" rows="3" placeholder="Brief description of the construction work"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Line Items Section -->
+      <div class="form-section">
+        <h3>📝 Invoice Items</h3>
+        <div class="line-items" id="lineItems">
+          <div class="line-item">
+            <input type="text" name="itemDescription[]" placeholder="Description of work/materials" required>
+            <input type="number" name="itemQuantity[]" placeholder="Qty" min="0" step="0.01" required>
+            <input type="text" name="itemUnit[]" placeholder="Unit" value="hrs">
+            <input type="number" name="itemRate[]" placeholder="Rate" min="0" step="0.01" required>
+            <input type="number" name="itemAmount[]" placeholder="Amount" readonly class="item-amount">
+            <button type="button" class="remove-item" onclick="removeItem(this)">×</button>
+          </div>
+        </div>
+        <button type="button" class="add-item" onclick="addItem()">+ Add Item</button>
+        
+        <div class="summary">
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span id="subtotal">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Tax Rate (%):</span>
+            <input type="number" id="taxRate" name="taxRate" value="8.5" min="0" step="0.1" style="width: 80px; text-align: right;">
+          </div>
+          <div class="summary-row">
+            <span>Tax Amount:</span>
+            <span id="taxAmount">$0.00</span>
+          </div>
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span id="total">$0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Document Upload Section -->
+      <div class="form-section">
+        <h3>📎 Supporting Documents</h3>
+        <div class="file-upload">
+          <p>Upload receipts, contracts, photos, or other supporting documents</p>
+          <input type="file" id="documents" name="documents" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls">
+          <p><small>Supported formats: PDF, DOC, DOCX, JPG, PNG, XLS, XLSX</small></p>
+        </div>
+      </div>
+
+      <!-- Notes Section -->
+      <div class="form-section">
+        <h3>💬 Additional Notes</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="notes">Notes/Comments</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Payment terms, special instructions, etc."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">💾 Save Invoice</button>
+    </form>
+    
+    <div id="response"></div>
+  </div>
 
   <script>
+    // Set current date as default
+    document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+    
+    // Generate invoice number
+    function generateInvoiceNumber() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const time = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+      return `ASH-${year}${month}${day}-${time}`;
+    }
+    
+    // Set default invoice number
+    document.getElementById('invoiceNumber').value = generateInvoiceNumber();
+
+    // Add new line item
+    function addItem() {
+      const lineItems = document.getElementById('lineItems');
+      const newItem = document.createElement('div');
+      newItem.className = 'line-item';
+      newItem.innerHTML = `
+        <input type="text" name="itemDescription[]" placeholder="Description of work/materials" required>
+        <input type="number" name="itemQuantity[]" placeholder="Qty" min="0" step="0.01" required>
+        <input type="text" name="itemUnit[]" placeholder="Unit" value="hrs">
+        <input type="number" name="itemRate[]" placeholder="Rate" min="0" step="0.01" required>
+        <input type="number" name="itemAmount[]" placeholder="Amount" readonly class="item-amount">
+        <button type="button" class="remove-item" onclick="removeItem(this)">×</button>
+      `;
+      lineItems.appendChild(newItem);
+      attachCalculationListeners(newItem);
+    }
+
+    // Remove line item
+    function removeItem(button) {
+      const lineItems = document.getElementById('lineItems');
+      if (lineItems.children.length > 1) {
+        button.parentElement.remove();
+        calculateTotals();
+      }
+    }
+
+    // Attach calculation listeners to inputs
+    function attachCalculationListeners(item) {
+      const qtyInput = item.querySelector('input[name="itemQuantity[]"]');
+      const rateInput = item.querySelector('input[name="itemRate[]"]');
+      
+      qtyInput.addEventListener('input', () => calculateItemAmount(item));
+      rateInput.addEventListener('input', () => calculateItemAmount(item));
+    }
+
+    // Calculate individual item amount
+    function calculateItemAmount(item) {
+      const qty = parseFloat(item.querySelector('input[name="itemQuantity[]"]').value) || 0;
+      const rate = parseFloat(item.querySelector('input[name="itemRate[]"]').value) || 0;
+      const amount = qty * rate;
+      
+      item.querySelector('.item-amount').value = amount.toFixed(2);
+      calculateTotals();
+    }
+
+    // Calculate totals
+    function calculateTotals() {
+      const amounts = document.querySelectorAll('.item-amount');
+      let subtotal = 0;
+      
+      amounts.forEach(amount => {
+        subtotal += parseFloat(amount.value) || 0;
+      });
+      
+      const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+      const taxAmount = subtotal * (taxRate / 100);
+      const total = subtotal + taxAmount;
+      
+      document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+      document.getElementById('taxAmount').textContent = `$${taxAmount.toFixed(2)}`;
+      document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Initialize calculation listeners for existing items
+    document.addEventListener('DOMContentLoaded', function() {
+      const existingItems = document.querySelectorAll('.line-item');
+      existingItems.forEach(item => attachCalculationListeners(item));
+      
+      // Tax rate change listener
+      document.getElementById('taxRate').addEventListener('input', calculateTotals);
+    });
+
+    // Form submission
     const form = document.getElementById("invoiceForm");
     form.addEventListener("submit", function(e) {
       e.preventDefault();
+      
+      const responseDiv = document.getElementById("response");
+      responseDiv.innerHTML = '<div style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px;">⏳ Saving invoice...</div>';
 
-      const data = new URLSearchParams(new FormData(form));
+      // Collect form data
+      const formData = new FormData(form);
+      
+      // Add calculated totals
+      formData.append('subtotal', document.getElementById('subtotal').textContent);
+      formData.append('taxAmount', document.getElementById('taxAmount').textContent);
+      formData.append('total', document.getElementById('total').textContent);
+      
+      // Collect line items
+      const items = [];
+      const descriptions = formData.getAll('itemDescription[]');
+      const quantities = formData.getAll('itemQuantity[]');
+      const units = formData.getAll('itemUnit[]');
+      const rates = formData.getAll('itemRate[]');
+      const amounts = formData.getAll('itemAmount[]');
+      
+      for (let i = 0; i < descriptions.length; i++) {
+        if (descriptions[i].trim()) {
+          items.push({
+            description: descriptions[i],
+            quantity: quantities[i],
+            unit: units[i],
+            rate: rates[i],
+            amount: amounts[i]
+          });
+        }
+      }
+      
+      formData.append('lineItems', JSON.stringify(items));
+
+      // Handle file uploads
+      const files = document.getElementById('documents').files;
+      if (files.length > 0) {
+        // For now, we'll just collect file names and sizes
+        // In a full implementation, you'd upload to Google Drive
+        const fileInfo = Array.from(files).map(file => ({
+          name: file.name,
+          size: file.size,
+          type: file.type
+        }));
+        formData.append('attachments', JSON.stringify(fileInfo));
+        
+        // Note: File upload to Google Drive would require additional Google Apps Script setup
+        responseDiv.innerHTML += '<div style="background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; padding: 10px; border-radius: 5px; margin-top: 10px;">📎 Note: File upload integration requires Google Drive API setup in Google Apps Script</div>';
+      }
+
+      // Convert FormData to URLSearchParams for the existing endpoint
+      const data = new URLSearchParams();
+      for (let [key, value] of formData.entries()) {
+        if (key !== 'documents') { // Skip file input
+          data.append(key, value);
+        }
+      }
 
       fetch("https://script.google.com/macros/s/AKfycbzJY-vfHNj_4LQ3vwy443cyOX9pqsxZxEdzo1RV2cwNP2sqvXBVIXUhzl8Y2ogmODWW/exec", {
         method: "POST",
-        body: data.toString()
+        body: data.toString(),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       })
       .then(res => res.json())
       .then(res => {
         if (res.status === "success") {
-          document.getElementById("response").textContent = "Invoice saved!";
-          form.reset();
+          responseDiv.innerHTML = '<div class="success">✅ Invoice saved successfully!</div>';
+          // Don't reset form immediately, let user review
+          setTimeout(() => {
+            if (confirm('Invoice saved! Would you like to create a new invoice?')) {
+              form.reset();
+              document.getElementById('invoiceNumber').value = generateInvoiceNumber();
+              document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+              calculateTotals();
+            }
+          }, 2000);
         } else {
-          document.getElementById("response").textContent = "Error saving: " + res.message;
+          responseDiv.innerHTML = '<div class="error">❌ Error saving invoice: ' + (res.message || 'Unknown error') + '</div>';
         }
       })
       .catch(err => {
-        document.getElementById("response").textContent = "Network error: " + err.message;
+        responseDiv.innerHTML = '<div class="error">❌ Network error: ' + err.message + '</div>';
       });
     });
+
+    // Validation helpers
+    function validateForm() {
+      const requiredFields = form.querySelectorAll('[required]');
+      let isValid = true;
+      
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          field.style.borderColor = '#dc3545';
+          isValid = false;
+        } else {
+          field.style.borderColor = '#ddd';
+        }
+      });
+      
+      return isValid;
+    }
+
+    // Auto-save to localStorage (optional feature)
+    function autoSave() {
+      const formData = new FormData(form);
+      const data = {};
+      for (let [key, value] of formData.entries()) {
+        data[key] = value;
+      }
+      localStorage.setItem('invoiceDraft', JSON.stringify(data));
+    }
+
+    // Load draft (optional feature)
+    function loadDraft() {
+      const draft = localStorage.getItem('invoiceDraft');
+      if (draft && confirm('Load saved draft?')) {
+        const data = JSON.parse(draft);
+        Object.keys(data).forEach(key => {
+          const input = form.querySelector(`[name="${key}"]`);
+          if (input) input.value = data[key];
+        });
+        calculateTotals();
+      }
+    }
+
+    // Call loadDraft on page load
+    window.addEventListener('load', loadDraft);
+
+    // Auto-save every 30 seconds
+    setInterval(autoSave, 30000);
   </script>
 </body>
 </html>
