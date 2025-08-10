@@ -508,10 +508,10 @@
 
       fetch("https://script.google.com/macros/s/AKfycbzJY-vfHNj_4LQ3vwy443cyOX9pqsxZxEdzo1RV2cwNP2sqvXBVIXUhzl8Y2ogmODWW/exec", {
         method: "POST",
-        body: data.toString(),
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)  // data must be a JS object
       })
       .then(res => res.json())
       .then(res => {
