@@ -430,9 +430,9 @@
       const taxAmount = subtotal * (taxRate / 100);
       const total = subtotal + taxAmount;
       
-      document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-      document.getElementById('taxAmount').textContent = `$${taxAmount.toFixed(2)}`;
-      document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+      document.getElementById('subtotal').textContent = `£${subtotal.toFixed(2)}`;
+      document.getElementById('taxAmount').textContent = `£${taxAmount.toFixed(2)}`;
+      document.getElementById('total').textContent = `£${total.toFixed(2)}`;
     }
 
     // Initialize calculation listeners for existing items
