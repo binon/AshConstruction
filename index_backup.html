@@ -241,39 +241,55 @@
         </div>
       </div>
 
-      <!-- Client & Project Selection Section -->
+      <!-- Client Information Section -->
       <div class="form-section">
-        <h3>👤 Client & Project Selection</h3>
+        <h3>👤 Client Information</h3>
         <div class="form-row">
           <div class="form-group">
-            <label for="selectedClient">Select Client *</label>
-            <select id="selectedClient" name="selectedClient" required>
-              <option value="">Choose a client...</option>
-            </select>
+            <label for="clientName">Client Name *</label>
+            <input type="text" id="clientName" name="clientName" required placeholder="Client Company Name">
           </div>
           <div class="form-group">
-            <label for="selectedProject">Select Project</label>
-            <select id="selectedProject" name="selectedProject">
-              <option value="">Choose a project...</option>
-            </select>
+            <label for="clientContact">Contact Person</label>
+            <input type="text" id="clientContact" name="clientContact" placeholder="John Doe">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <a href="client.html" style="display: inline-block; padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">
-                ➕ Manage Clients & Projects
-              </a>
-              <button type="button" id="refreshData" style="padding: 8px 16px; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">
-                🔄 Refresh
-              </button>
-            </div>
+            <label for="clientEmail">Email</label>
+            <input type="email" id="clientEmail" name="clientEmail" placeholder="client@example.com">
+          </div>
+          <div class="form-group">
+            <label for="clientPhone">Phone</label>
+            <input type="tel" id="clientPhone" name="clientPhone" placeholder="+1 (555) 123-4567">
           </div>
         </div>
-        <div id="clientProjectInfo" style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 5px; display: none;">
-          <h4 style="margin-bottom: 10px; color: #333;">Selected Details:</h4>
-          <div id="clientInfo"></div>
-          <div id="projectInfo"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="billingAddress">Billing Address</label>
+            <textarea id="billingAddress" name="billingAddress" rows="3" placeholder="Street Address, City, State, ZIP"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Information Section -->
+      <div class="form-section">
+        <h3>🏠 Project Details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="projectName">Project Name</label>
+            <input type="text" id="projectName" name="projectName" placeholder="Kitchen Renovation">
+          </div>
+          <div class="form-group">
+            <label for="projectAddress">Project Address</label>
+            <input type="text" id="projectAddress" name="projectAddress" placeholder="123 Main St, City, State">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="projectDescription">Project Description</label>
+            <textarea id="projectDescription" name="projectDescription" rows="3" placeholder="Brief description of the construction work"></textarea>
+          </div>
         </div>
       </div>
 
@@ -356,120 +372,6 @@
     // Set default invoice number
     document.getElementById('invoiceNumber').value = generateInvoiceNumber();
 
-    // Client and Project Management
-    let clients = [];
-    let projects = [];
-    
-    function loadClientProjectData() {
-      clients = JSON.parse(localStorage.getItem('ashClients') || '[]');
-      projects = JSON.parse(localStorage.getItem('ashProjects') || '[]');
-      populateClientDropdown();
-    }
-    
-    function populateClientDropdown() {
-      const clientSelect = document.getElementById('selectedClient');
-      const currentValue = clientSelect.value;
-      
-      clientSelect.innerHTML = '<option value="">Choose a client...</option>';
-      
-      clients.forEach(client => {
-        const option = document.createElement('option');
-        option.value = client.id;
-        option.textContent = client.name;
-        clientSelect.appendChild(option);
-      });
-      
-      // Restore selected value if it still exists
-      if (currentValue && clients.find(c => c.id === currentValue)) {
-        clientSelect.value = currentValue;
-        onClientSelected(); // Trigger project loading
-      }
-    }
-    
-    function populateProjectDropdown(clientId) {
-      const projectSelect = document.getElementById('selectedProject');
-      projectSelect.innerHTML = '<option value="">Choose a project...</option>';
-      
-      const clientProjects = projects.filter(p => p.clientId === clientId);
-      clientProjects.forEach(project => {
-        const option = document.createElement('option');
-        option.value = project.id;
-        option.textContent = project.name;
-        projectSelect.appendChild(option);
-      });
-    }
-    
-    function onClientSelected() {
-      const clientSelect = document.getElementById('selectedClient');
-      const clientId = clientSelect.value;
-      
-      if (clientId) {
-        populateProjectDropdown(clientId);
-        updateClientProjectInfo();
-      } else {
-        document.getElementById('selectedProject').innerHTML = '<option value="">Choose a project...</option>';
-        document.getElementById('clientProjectInfo').style.display = 'none';
-      }
-    }
-    
-    function onProjectSelected() {
-      updateClientProjectInfo();
-    }
-    
-    function updateClientProjectInfo() {
-      const clientId = document.getElementById('selectedClient').value;
-      const projectId = document.getElementById('selectedProject').value;
-      const infoDiv = document.getElementById('clientProjectInfo');
-      const clientInfoDiv = document.getElementById('clientInfo');
-      const projectInfoDiv = document.getElementById('projectInfo');
-      
-      if (!clientId) {
-        infoDiv.style.display = 'none';
-        return;
-      }
-      
-      const client = clients.find(c => c.id === clientId);
-      const project = projects.find(p => p.id === projectId);
-      
-      let clientHtml = '';
-      let projectHtml = '';
-      
-      if (client) {
-        clientHtml = `
-          <div style="margin-bottom: 10px;">
-            <strong>Client:</strong> ${client.name}<br>
-            ${client.contact ? `<strong>Contact:</strong> ${client.contact}<br>` : ''}
-            ${client.email ? `<strong>Email:</strong> ${client.email}<br>` : ''}
-            ${client.phone ? `<strong>Phone:</strong> ${client.phone}<br>` : ''}
-            ${client.address ? `<strong>Address:</strong> ${client.address}` : ''}
-          </div>
-        `;
-      }
-      
-      if (project) {
-        projectHtml = `
-          <div>
-            <strong>Project:</strong> ${project.name}<br>
-            ${project.address ? `<strong>Location:</strong> ${project.address}<br>` : ''}
-            ${project.description ? `<strong>Description:</strong> ${project.description}` : ''}
-          </div>
-        `;
-      }
-      
-      if (clientHtml || projectHtml) {
-        clientInfoDiv.innerHTML = clientHtml;
-        projectInfoDiv.innerHTML = projectHtml;
-        infoDiv.style.display = 'block';
-      } else {
-        infoDiv.style.display = 'none';
-      }
-    }
-    
-    // Event listeners for dropdowns
-    document.getElementById('selectedClient').addEventListener('change', onClientSelected);
-    document.getElementById('selectedProject').addEventListener('change', onProjectSelected);
-    document.getElementById('refreshData').addEventListener('click', loadClientProjectData);
-
     // Add new line item
     function addItem() {
       const lineItems = document.getElementById('lineItems');
@@ -540,9 +442,6 @@
       
       // Tax rate change listener
       document.getElementById('taxRate').addEventListener('input', calculateTotals);
-      
-      // Load client and project data
-      loadClientProjectData();
     });
 
     // Form submission
@@ -550,41 +449,11 @@
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       
-      // Validate client selection
-      const clientId = document.getElementById('selectedClient').value;
-      if (!clientId) {
-        document.getElementById("response").innerHTML = '<div class="error">❌ Please select a client before submitting the invoice.</div>';
-        return;
-      }
-      
       const responseDiv = document.getElementById("response");
       responseDiv.innerHTML = '<div style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px;">⏳ Saving invoice...</div>';
 
       // Collect form data
       const formData = new FormData(form);
-      
-      // Add selected client and project information
-      const projectId = document.getElementById('selectedProject').value;
-      
-      if (clientId) {
-        const selectedClient = clients.find(c => c.id === clientId);
-        if (selectedClient) {
-          formData.append('clientName', selectedClient.name);
-          formData.append('clientContact', selectedClient.contact || '');
-          formData.append('clientEmail', selectedClient.email || '');
-          formData.append('clientPhone', selectedClient.phone || '');
-          formData.append('billingAddress', selectedClient.address || '');
-        }
-      }
-      
-      if (projectId) {
-        const selectedProject = projects.find(p => p.id === projectId);
-        if (selectedProject) {
-          formData.append('projectName', selectedProject.name);
-          formData.append('projectAddress', selectedProject.address || '');
-          formData.append('projectDescription', selectedProject.description || '');
-        }
-      }
       
       // Add calculated totals
       formData.append('subtotal', document.getElementById('subtotal').textContent);
