@@ -793,7 +793,7 @@
         data.lastSaved = new Date().toISOString();
         
         // Save to Google Sheets as draft
-        makeGoogleSheetsRequest('saveDraft', data)
+        makeGoogleSheetsRequest('saveInvoice', data)
           .then(response => {
             if (response.status === 'success') {
               console.log('Draft auto-saved to Google Sheets');
