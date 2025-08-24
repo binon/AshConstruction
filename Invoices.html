@@ -815,7 +815,7 @@
       if (isLoading) return;
       
       try {
-        const response = await makeGoogleSheetsRequest('getDraft');
+        const response = await makeGoogleSheetsRequest('getInvoices');
         
         if (response.status === 'success' && response.data && confirm('Load saved draft from Google Sheets?')) {
           const data = response.data;
