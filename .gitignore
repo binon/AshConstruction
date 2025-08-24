@@ -1,5 +1,33 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
 /.vs
+
+# Development and temporary files
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Node.js (if using)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local server files
+.cache/
+
+# Configuration files with sensitive data (if any)
+config.local.js
+secrets.js
+
+# Browser artifacts
+*.crdownload
