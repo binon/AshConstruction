@@ -26,9 +26,11 @@ const API_ENDPOINTS = {
     delete: { action: 'deleteProject' }
   },
   
-  // Invoice operations (already implemented)
+  // Invoice operations (updated for row-based storage)
   invoices: {
-    save: { action: 'saveInvoice' } // This is the default action when no action is specified
+    save: { action: 'saveInvoice' }, // Legacy action for backward compatibility
+    saveRow: { action: 'saveInvoiceRow' }, // New action for individual invoice rows
+    getAll: { action: 'getInvoices' } // Get all invoice data
   }
 };
 
@@ -97,8 +99,17 @@ class GoogleSheetsAPI {
     return this.makeRequest('saveProject', projectData);
   }
 
-  static async deleteProject(projectId) {
-    return this.makeRequest('deleteProject', { projectId });
+  // Invoice operations
+  static async getInvoices() {
+    return this.makeRequest('getInvoices');
+  }
+
+  static async saveInvoice(invoiceData) {
+    return this.makeRequest('saveInvoice', invoiceData);
+  }
+
+  static async saveInvoiceRow(invoiceRowData) {
+    return this.makeRequest('saveInvoiceRow', invoiceRowData);
   }
 }
 
@@ -113,6 +124,9 @@ class GoogleSheetsAPI {
  * 4. getProjects: Return array of project objects
  * 5. saveProject: Save/update project data, return success/error
  * 6. deleteProject: Delete project by ID, return success/error
+ * 7. getInvoices: Return array of invoice row objects
+ * 8. saveInvoice: Save invoice data (legacy method)
+ * 9. saveInvoiceRow: Save individual invoice row with complete invoice details
  * 
  * Data Structure Examples:
  * 
@@ -135,6 +149,27 @@ class GoogleSheetsAPI {
  *   address: "Project Address",
  *   description: "Project Description",
  *   createdAt: "2024-01-01T00:00:00.000Z"
+ * }
+ * 
+ * Invoice Row Object (NEW FORMAT):
+ * {
+ *   timestamp: "2024-01-01T12:00:00.000Z",
+ *   invoiceNumber: "ASH-20240101-1200",
+ *   invoiceDate: "2024-01-01",
+ *   dueDate: "2024-01-31",
+ *   clientName: "Client Name",
+ *   description: "Work description",
+ *   quantity: "8",
+ *   unit: "hrs",
+ *   hrs: "8",
+ *   rate: "50.00",
+ *   amount: "400.00",
+ *   subtotal: "£400.00",
+ *   taxAmount: "£80.00",
+ *   total: "£480.00",
+ *   notes: "Invoice notes",
+ *   attachmentLinks: "file1.pdf, file2.jpg",
+ *   projectName: "Project Name"
  * }
  * 
  * Response Format:
