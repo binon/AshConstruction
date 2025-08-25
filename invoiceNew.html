@@ -661,6 +661,54 @@
 
   <script src="google-apps-script-endpoints.js"></script>
   <script>
+    /*
+     * GOOGLE APPS SCRIPT REQUIREMENTS:
+     * 
+     * To enable Google Drive file upload functionality, the Google Apps Script must include:
+     * 
+     * 1. Enable Google Drive API in Google Cloud Console
+     * 2. Add the following function to handle file uploads:
+     * 
+     * function doPost(e) {
+     *   const action = e.parameter.action || e.parameters.action?.[0];
+     *   
+     *   if (action === 'uploadToGoogleDrive') {
+     *     return handleGoogleDriveUpload(e);
+     *   }
+     *   // ... other existing actions
+     * }
+     * 
+     * function handleGoogleDriveUpload(e) {
+     *   try {
+     *     const fileBlob = e.parameters.file[0];  // Get the uploaded file
+     *     const fileName = e.parameter.fileName || 'uploaded_file';
+     *     
+     *     // Create file in Google Drive
+     *     const driveFile = DriveApp.createFile(fileBlob);
+     *     driveFile.setName(fileName);
+     *     
+     *     // Make file publicly viewable
+     *     driveFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+     *     
+     *     return ContentService
+     *       .createTextOutput(JSON.stringify({
+     *         status: 'success',
+     *         message: 'File uploaded successfully',
+     *         driveId: driveFile.getId(),
+     *         driveUrl: driveFile.getUrl(),
+     *         shareableLink: 'https://drive.google.com/file/d/' + driveFile.getId() + '/view'
+     *       }))
+     *       .setMimeType(ContentService.MimeType.JSON);
+     *   } catch (error) {
+     *     return ContentService
+     *       .createTextOutput(JSON.stringify({
+     *         status: 'error',
+     *         message: 'Upload failed: ' + error.toString()
+     *       }))
+     *       .setMimeType(ContentService.MimeType.JSON);
+     *   }
+     * }
+     */
     // Global variables
     let clients = [];
     let projects = [];
