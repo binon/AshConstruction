@@ -1053,7 +1053,7 @@
         for (let i = 0; i < descriptions.length; i++) {
           if (descriptions[i].trim()) {
             const invoiceRowData = {
-              action: 'saveInvoiceRow',
+              action: 'saveInvoice',
               timestamp: new Date().toISOString(),
               invoiceNumber: invoiceNumber,
               invoiceDate: invoiceDate,
@@ -1073,14 +1073,14 @@
               projectName: projectName
             };
             
-            savePromises.push(makeGoogleSheetsRequest('saveInvoiceRow', invoiceRowData));
+            savePromises.push(makeGoogleSheetsRequest('saveInvoice', invoiceRowData));
           }
         }
         
         // If no line items, save at least one row with invoice header information
         if (savePromises.length === 0) {
           const invoiceRowData = {
-            action: 'saveInvoiceRow',
+            action: 'saveInvoice',
             timestamp: new Date().toISOString(),
             invoiceNumber: invoiceNumber,
             invoiceDate: invoiceDate,
@@ -1100,7 +1100,7 @@
             projectName: projectName
           };
           
-          savePromises.push(makeGoogleSheetsRequest('saveInvoiceRow', invoiceRowData));
+          savePromises.push(makeGoogleSheetsRequest('saveInvoice', invoiceRowData));
         }
         
         // Wait for all rows to be saved
