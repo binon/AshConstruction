@@ -31,6 +31,11 @@ const API_ENDPOINTS = {
     save: { action: 'saveInvoice' }, // Legacy action for backward compatibility
     saveRow: { action: 'saveInvoiceRow' }, // New action for individual invoice rows
     getAll: { action: 'getInvoices' } // Get all invoice data
+  },
+  
+  // Google Drive operations
+  googleDrive: {
+    upload: { action: 'uploadToGoogleDrive' } // Upload file to Google Drive and return shareable link
   }
 };
 
@@ -111,6 +116,31 @@ class GoogleSheetsAPI {
   static async saveInvoiceRow(invoiceRowData) {
     return this.makeRequest('saveInvoiceRow', invoiceRowData);
   }
+  
+  // Google Drive operations
+  static async uploadToGoogleDrive(file, fileName, fileType) {
+    const formData = new FormData();
+    formData.append('action', 'uploadToGoogleDrive');
+    formData.append('file', file);
+    formData.append('fileName', fileName);
+    formData.append('fileType', fileType);
+    
+    try {
+      const response = await fetch(GOOGLE_APPS_SCRIPT_BASE_URL, {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Google Drive upload failed:', error);
+      throw error;
+    }
+  }
 }
 
 /**
@@ -127,6 +157,7 @@ class GoogleSheetsAPI {
  * 7. getInvoices: Return array of invoice row objects
  * 8. saveInvoice: Save invoice data (legacy method)
  * 9. saveInvoiceRow: Save individual invoice row with complete invoice details
+ * 10. uploadToGoogleDrive: Upload file to Google Drive and return file information
  * 
  * Data Structure Examples:
  * 
@@ -170,6 +201,15 @@ class GoogleSheetsAPI {
  *   notes: "Invoice notes",
  *   attachmentLinks: "file1.pdf, file2.jpg",
  *   projectName: "Project Name"
+ * }
+ * 
+ * Google Drive Upload Response Format:
+ * {
+ *   status: "success" | "error",
+ *   message: "Success/error message",
+ *   driveId: "Google Drive file ID",
+ *   driveUrl: "Google Drive file URL",
+ *   shareableLink: "Public shareable link to the file"
  * }
  * 
  * Response Format:
