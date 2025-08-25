@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AshConstruction - Invoice Entry System (New)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 3px solid #007bff;
+      padding-bottom: 20px;
+    }
+    
+    .header h1 {
+      color: #007bff;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+    
+    .tab-container {
+      margin-bottom: 20px;
+    }
+    
+    .tabs {
+      display: flex;
+      background: #f8f9fa;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #dee2e6;
+    }
+    
+    .tab {
+      flex: 1;
+      padding: 15px 20px;
+      background: #f8f9fa;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #495057;
+      transition: all 0.3s;
+    }
+    
+    .tab:hover {
+      background: #e9ecef;
+    }
+    
+    .tab.active {
+      background: #007bff;
+      color: white;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .nav-links {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .nav-links a {
+      display: inline-block;
+      margin: 0 10px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    
+    .nav-links a:hover {
+      background: #0056b3;
+    }
+    
+    .form-section {
+      margin-bottom: 25px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fafafa;
+    }
+    
+    .form-section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0,123,255,0.3);
+    }
+    
+    .line-items {
+      margin-top: 15px;
+    }
+    
+    .line-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .line-item input {
+      flex: 1;
+      margin: 0;
+    }
+    
+    .add-item {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    
+    .add-item:hover {
+      background: #218838;
+    }
+    
+    .remove-item {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      min-width: 30px;
+    }
+    
+    .remove-item:hover {
+      background: #c82333;
+    }
+    
+    .summary {
+      background: #e9ecef;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .summary-row.total {
+      font-weight: bold;
+      font-size: 18px;
+      border-top: 2px solid #007bff;
+      padding-top: 10px;
+      margin-top: 15px;
+    }
+    
+    .file-upload {
+      border: 2px dashed #007bff;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      background: #f8f9fa;
+    }
+    
+    .file-upload input[type="file"] {
+      margin: 10px 0;
+    }
+    
+    .file-upload-progress {
+      display: none;
+      margin-top: 10px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: #e9ecef;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background-color: #007bff;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    .uploaded-files {
+      margin-top: 15px;
+    }
+    
+    .uploaded-file {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      margin: 5px 0;
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .uploaded-file a {
+      color: #155724;
+      text-decoration: none;
+    }
+    
+    .uploaded-file a:hover {
+      text-decoration: underline;
+    }
+    
+    .submit-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+    }
+    
+    .submit-btn:hover {
+      background: #0056b3;
+    }
+    
+    .submit-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+    
+    .client-project-info {
+      background: #d1ecf1;
+      border: 1px solid #bee5eb;
+      border-radius: 5px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+    }
+    
+    .client-info, .project-info {
+      margin-bottom: 10px;
+    }
+    
+    .client-info h4, .project-info h4 {
+      color: #0c5460;
+      margin-bottom: 5px;
+    }
+    
+    .client-info p, .project-info p {
+      color: #0c5460;
+      margin: 2px 0;
+      font-size: 14px;
+    }
+    
+    .search-controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .search-controls select, .search-controls button {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .search-controls button {
+      background: #17a2b8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .search-controls button:hover {
+      background: #138496;
+    }
+    
+    .invoice-item {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .invoice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .invoice-number {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #007bff;
+    }
+    
+    .invoice-date {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .invoice-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .invoice-client, .invoice-project {
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 5px;
+    }
+    
+    .invoice-line-items {
+      margin: 15px 0;
+    }
+    
+    .line-item-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+      gap: 10px;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    
+    .line-item-header {
+      font-weight: bold;
+      background: #e9ecef;
+      border-radius: 4px;
+    }
+    
+    .invoice-totals {
+      text-align: right;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    
+    .invoice-attachments {
+      margin-top: 15px;
+    }
+    
+    .attachment-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    
+    .attachment-link {
+      background: #e7f3ff;
+      border: 1px solid #b3d7ff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #0066cc;
+      font-size: 12px;
+    }
+    
+    .attachment-link:hover {
+      background: #cce7ff;
+    }
+    
+    .no-invoices {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+    
+    .response {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    
+    .response.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .response.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏗️ AshConstruction</h1>
+      <p>Invoice Entry System (New) - Google Drive Integration</p>
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="client.html">Clients</a>
+      <a href="Invoices.html">Invoices (Original)</a>
+      <a href="invoiceNew.html">Invoices (New)</a>
+    </div>
+
+    <div class="tab-container">
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('historyTab')">📊 Invoice History</button>
+        <button class="tab" onclick="showTab('createTab')">➕ Create Invoice</button>
+      </div>
+    </div>
+
+    <!-- Invoice History Tab -->
+    <div id="historyTab" class="tab-content active">
+      <div class="form-section">
+        <h3>🔍 Search & Filter</h3>
+        <div class="search-controls">
+          <div class="form-group" style="min-width: 200px;">
+            <label for="filterClient">Filter by Client:</label>
+            <select id="filterClient" onchange="filterInvoices()">
+              <option value="">All Clients</option>
+            </select>
+          </div>
+          <div class="form-group" style="min-width: 200px;">
+            <label for="filterProject">Filter by Project:</label>
+            <select id="filterProject" onchange="filterInvoices()">
+              <option value="">All Projects</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: end;">
+            <button type="button" id="refreshHistory" style="padding: 10px 20px; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 25px;">
+              🔄 Refresh History
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h3>📄 Invoice History</h3>
+        <div id="invoiceHistoryContainer">
+          <div class="no-invoices">Loading invoice history...</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Create Invoice Tab -->
+    <div id="createTab" class="tab-content">
+    <form id="invoiceForm">
+      <!-- Invoice Header Section -->
+      <div class="form-section">
+        <h3>📋 Invoice Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="invoiceNumber">Invoice Number *</label>
+            <input type="text" id="invoiceNumber" name="invoiceNumber" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="invoiceDate">Invoice Date *</label>
+            <input type="date" id="invoiceDate" name="invoiceDate" required>
+          </div>
+          <div class="form-group">
+            <label for="dueDate">Due Date *</label>
+            <input type="date" id="dueDate" name="dueDate" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- Client and Project Selection -->
+      <div class="form-section">
+        <h3>👤 Client & Project Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="selectedClient">Select Client *</label>
+            <select id="selectedClient" name="selectedClient" required onchange="onClientSelected()">
+              <option value="">Choose a client...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="selectedProject">Select Project</label>
+            <select id="selectedProject" name="selectedProject" onchange="onProjectSelected()">
+              <option value="">Choose a project...</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Client and Project Info Display -->
+        <div id="clientProjectInfo" class="client-project-info">
+          <div id="clientInfo" class="client-info"></div>
+          <div id="projectInfo" class="project-info"></div>
+        </div>
+      </div>
+
+      <!-- Line Items Section -->
+      <div class="form-section">
+        <h3>📝 Invoice Line Items</h3>
+        <div class="line-items" id="lineItems">
+          <!-- First line item -->
+          <div class="line-item">
+            <input type="text" name="itemDescription[]" placeholder="Description of work/item" required>
+            <input type="number" name="itemQuantity[]" placeholder="Qty" min="0" step="0.01" required>
+            <select name="itemUnit[]" required>
+              <option value="hrs">Hours</option>
+              <option value="days">Days</option>
+              <option value="items">Items</option>
+              <option value="m²">Square Meters</option>
+              <option value="m">Meters</option>
+            </select>
+            <input type="number" name="itemRate[]" placeholder="Rate" min="0" step="0.01" required>
+            <input type="number" name="itemAmount[]" placeholder="Amount" readonly class="item-amount">
+            <button type="button" class="remove-item" onclick="removeItem(this)">×</button>
+          </div>
+        </div>
+        <button type="button" class="add-item" onclick="addLineItem()">+ Add Line Item</button>
+      </div>
+
+      <!-- Invoice Summary -->
+      <div class="summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span id="subtotal">£0.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax Rate:</span>
+          <input type="number" id="taxRate" name="taxRate" value="20" min="0" max="100" step="0.1" style="width: 80px; text-align: right;" onchange="calculateTotals()"> %
+        </div>
+        <div class="summary-row">
+          <span>Tax Amount:</span>
+          <span id="taxAmount">£0.00</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span id="total">£0.00</span>
+        </div>
+      </div>
+
+      <!-- Document Upload Section with Google Drive Integration -->
+      <div class="form-section">
+        <h3>📎 Supporting Documents - Google Drive Upload</h3>
+        <div class="file-upload">
+          <p>Upload receipts, contracts, photos, or other supporting documents to Google Drive</p>
+          <input type="file" id="documents" name="documents" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls">
+          <p><small>Supported formats: PDF, DOC, DOCX, JPG, PNG, XLS, XLSX</small></p>
+          
+          <div class="file-upload-progress" id="uploadProgress">
+            <p>Uploading files to Google Drive...</p>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="uploadStatus">Preparing upload...</p>
+          </div>
+          
+          <div class="uploaded-files" id="uploadedFiles"></div>
+        </div>
+      </div>
+
+      <!-- Notes Section -->
+      <div class="form-section">
+        <h3>💬 Additional Notes</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="notes">Notes/Comments</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Payment terms, special instructions, etc."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">💾 Save Invoice</button>
+    </form>
+    </div>
+
+    <div id="response" class="response" style="display: none;"></div>
+  </div>
+
+  <script src="google-apps-script-endpoints.js"></script>
+  <script>
+    // Global variables
+    let clients = [];
+    let projects = [];
+    let invoices = [];
+    let isLoading = false;
+    let uploadedGoogleDriveFiles = [];
+    
+    // Google Apps Script configuration
+    const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJY-vfHNj_4LQ3vwy443cyOX9pqsxZxEdzo1RV2cwNP2sqvXBVIXUhzl8Y2ogmODWW/exec";
+    
+    // Tab switching functionality
+    function showTab(tabName) {
+      // Hide all tab contents
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      // Remove active class from all tabs
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      
+      // Show selected tab content
+      document.getElementById(tabName).classList.add('active');
+      
+      // Mark clicked tab as active
+      event.target.classList.add('active');
+      
+      // Initialize tab-specific functionality
+      if (tabName === 'createTab') {
+        initializeCreateForm();
+      } else if (tabName === 'historyTab') {
+        loadInvoiceHistory();
+      }
+    }
+    
+    // Initialize create form when switching to create tab
+    function initializeCreateForm() {
+      if (!document.getElementById('invoiceDate').value) {
+        document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+      }
+      if (!document.getElementById('invoiceNumber').value) {
+        document.getElementById('invoiceNumber').value = generateInvoiceNumber();
+      }
+    }
+    
+    // Generate invoice number
+    function generateInvoiceNumber() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const time = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+      return `ASH-${year}${month}${day}-${time}`;
+    }
+    
+    // Google Sheets API helper function
+    async function makeGoogleSheetsRequest(action, data = {}) {
+      const requestData = new URLSearchParams();
+      requestData.append('action', action);
+      
+      // Add all data fields to the request
+      Object.keys(data).forEach(key => {
+        if (data[key] !== null && data[key] !== undefined) {
+          requestData.append(key, data[key]);
+        }
+      });
+
+      try {
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+          },
+          body: requestData.toString()
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error('API request failed:', error);
+        throw error;
+      }
+    }
+    
+    // Google Drive file upload function
+    async function uploadFileToGoogleDrive(file) {
+      const formData = new FormData();
+      formData.append('action', 'uploadToGoogleDrive');
+      formData.append('file', file);
+      formData.append('fileName', file.name);
+      formData.append('fileType', file.type);
+      
+      try {
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          return {
+            name: file.name,
+            driveId: result.driveId,
+            driveUrl: result.driveUrl,
+            shareableLink: result.shareableLink
+          };
+        } else {
+          throw new Error(result.message || 'Failed to upload file');
+        }
+      } catch (error) {
+        console.error('File upload failed:', error);
+        throw error;
+      }
+    }
+    
+    // Handle multiple file uploads to Google Drive
+    async function uploadFilesToGoogleDrive(files) {
+      const uploadedFiles = [];
+      const progressElement = document.getElementById('uploadProgress');
+      const statusElement = document.getElementById('uploadStatus');
+      const progressFill = document.getElementById('progressFill');
+      const uploadedFilesContainer = document.getElementById('uploadedFiles');
+      
+      if (files.length === 0) {
+        return uploadedFiles;
+      }
+      
+      // Show progress
+      progressElement.style.display = 'block';
+      uploadedFilesContainer.innerHTML = '';
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        statusElement.textContent = `Uploading ${file.name} (${i + 1}/${files.length})...`;
+        
+        try {
+          const uploadResult = await uploadFileToGoogleDrive(file);
+          uploadedFiles.push(uploadResult);
+          
+          // Update progress
+          const progress = ((i + 1) / files.length) * 100;
+          progressFill.style.width = `${progress}%`;
+          
+          // Add uploaded file to display
+          const fileElement = document.createElement('div');
+          fileElement.className = 'uploaded-file';
+          fileElement.innerHTML = `
+            <span>📄 ${uploadResult.name}</span>
+            <a href="${uploadResult.shareableLink}" target="_blank">View in Drive</a>
+          `;
+          uploadedFilesContainer.appendChild(fileElement);
+          
+        } catch (error) {
+          console.error(`Failed to upload ${file.name}:`, error);
+          statusElement.textContent = `Failed to upload ${file.name}: ${error.message}`;
+          
+          // Add error display
+          const errorElement = document.createElement('div');
+          errorElement.className = 'uploaded-file';
+          errorElement.style.background = '#f8d7da';
+          errorElement.style.borderColor = '#f5c6cb';
+          errorElement.innerHTML = `
+            <span>❌ ${file.name}</span>
+            <span style="color: #721c24;">Upload failed</span>
+          `;
+          uploadedFilesContainer.appendChild(errorElement);
+        }
+      }
+      
+      // Hide progress after completion
+      setTimeout(() => {
+        progressElement.style.display = 'none';
+      }, 2000);
+      
+      statusElement.textContent = `Upload complete: ${uploadedFiles.length}/${files.length} files uploaded successfully`;
+      
+      return uploadedFiles;
+    }
+    
+    // Invoice History Functions
+    async function loadInvoiceHistory() {
+      if (isLoading) return;
+      
+      isLoading = true;
+      const container = document.getElementById('invoiceHistoryContainer');
+      container.innerHTML = '<div class="no-invoices">Loading invoice history...</div>';
+      
+      try {
+        // Load invoices, clients, and projects
+        const [invoicesResponse, clientsResponse, projectsResponse] = await Promise.all([
+          makeGoogleSheetsRequest('getInvoices'),
+          makeGoogleSheetsRequest('getClients'),
+          makeGoogleSheetsRequest('getProjects')
+        ]);
+        
+        if (invoicesResponse.status === 'success') {
+          invoices = invoicesResponse.data || [];
+        } else {
+          invoices = [];
+        }
+        
+        if (clientsResponse.status === 'success') {
+          clients = clientsResponse.data || [];
+          populateFilterDropdowns();
+        } else {
+          clients = [];
+        }
+        
+        if (projectsResponse.status === 'success') {
+          projects = projectsResponse.data || [];
+          populateFilterDropdowns();
+        } else {
+          projects = [];
+        }
+        
+        displayInvoiceHistory();
+        
+      } catch (error) {
+        console.error('Error loading invoice history:', error);
+        container.innerHTML = '<div class="no-invoices">Error loading invoice history. Please try again.</div>';
+      } finally {
+        isLoading = false;
+      }
+    }
+    
+    function populateFilterDropdowns() {
+      // Populate client filter
+      const clientFilter = document.getElementById('filterClient');
+      if (clientFilter) {
+        const currentClientValue = clientFilter.value;
+        clientFilter.innerHTML = '<option value="">All Clients</option>';
+        
+        clients.forEach(client => {
+          const option = document.createElement('option');
+          option.value = client.name || client.Name || '';
+          option.textContent = client.name || client.Name || 'Unknown Client';
+          clientFilter.appendChild(option);
+        });
+        
+        // Restore previous selection
+        if (currentClientValue) {
+          clientFilter.value = currentClientValue;
+        }
+      }
+      
+      // Populate project filter
+      const projectFilter = document.getElementById('filterProject');
+      if (projectFilter) {
+        const currentProjectValue = projectFilter.value;
+        projectFilter.innerHTML = '<option value="">All Projects</option>';
+        
+        projects.forEach(project => {
+          const option = document.createElement('option');
+          option.value = project.name || project.Name || '';
+          option.textContent = project.name || project.Name || 'Unknown Project';
+          projectFilter.appendChild(option);
+        });
+        
+        // Restore previous selection
+        if (currentProjectValue) {
+          projectFilter.value = currentProjectValue;
+        }
+      }
+    }
+    
+    function filterInvoices() {
+      const clientFilter = document.getElementById('filterClient').value;
+      const projectFilter = document.getElementById('filterProject').value;
+      
+      let filteredInvoices = invoices;
+      
+      if (clientFilter) {
+        filteredInvoices = filteredInvoices.filter(invoice => 
+          (invoice.clientName || invoice.ClientName || '').toLowerCase().includes(clientFilter.toLowerCase())
+        );
+      }
+      
+      if (projectFilter) {
+        filteredInvoices = filteredInvoices.filter(invoice => 
+          (invoice.projectName || invoice.ProjectName || '').toLowerCase().includes(projectFilter.toLowerCase())
+        );
+      }
+      
+      displayInvoiceHistory(filteredInvoices);
+    }
+    
+    function displayInvoiceHistory(filteredInvoices = invoices) {
+      const container = document.getElementById('invoiceHistoryContainer');
+      
+      if (!filteredInvoices || filteredInvoices.length === 0) {
+        container.innerHTML = '<div class="no-invoices">No invoices found for the selected criteria.</div>';
+        return;
+      }
+      
+      // Group invoices by invoice number since each line item is a separate row
+      const groupedInvoices = {};
+      filteredInvoices.forEach(invoice => {
+        const key = invoice.invoiceNumber || invoice.InvoiceNumber || 'Unknown';
+        if (!groupedInvoices[key]) {
+          groupedInvoices[key] = {
+            ...invoice,
+            lineItems: []
+          };
+        }
+        
+        // Add line item if it exists
+        if (invoice.description || invoice.Description) {
+          groupedInvoices[key].lineItems.push({
+            description: invoice.description || invoice.Description || '',
+            quantity: invoice.quantity || invoice.Quantity || '',
+            unit: invoice.unit || invoice.Unit || '',
+            rate: invoice.rate || invoice.Rate || '',
+            amount: invoice.amount || invoice.Amount || ''
+          });
+        }
+      });
+      
+      // Convert to array and sort by date (newest first)
+      const sortedInvoices = Object.values(groupedInvoices).sort((a, b) => {
+        const dateA = new Date(a.invoiceDate || a.InvoiceDate || '1970-01-01');
+        const dateB = new Date(b.invoiceDate || b.InvoiceDate || '1970-01-01');
+        return dateB - dateA;
+      });
+      
+      let html = '';
+      sortedInvoices.forEach(invoice => {
+        const invoiceNumber = invoice.invoiceNumber || invoice.InvoiceNumber || 'Unknown';
+        const invoiceDate = invoice.invoiceDate || invoice.InvoiceDate || 'Unknown';
+        const dueDate = invoice.dueDate || invoice.DueDate || 'Unknown';
+        const clientName = invoice.clientName || invoice.ClientName || 'Unknown';
+        const projectName = invoice.projectName || invoice.ProjectName || 'No Project';
+        const total = invoice.total || invoice.Total || '£0.00';
+        const notes = invoice.notes || invoice.Notes || '';
+        const attachmentLinks = invoice.attachmentLinks || invoice.AttachmentLinks || '';
+        
+        html += `
+          <div class="invoice-item">
+            <div class="invoice-header">
+              <div class="invoice-number">${invoiceNumber}</div>
+              <div class="invoice-date">Date: ${invoiceDate} | Due: ${dueDate}</div>
+            </div>
+            
+            <div class="invoice-details">
+              <div class="invoice-client">
+                <strong>Client:</strong> ${clientName}
+              </div>
+              <div class="invoice-project">
+                <strong>Project:</strong> ${projectName}
+              </div>
+            </div>
+        `;
+        
+        if (invoice.lineItems.length > 0) {
+          html += `
+            <div class="invoice-line-items">
+              <div class="line-item-row line-item-header">
+                <div>Description</div>
+                <div>Quantity</div>
+                <div>Unit</div>
+                <div>Rate</div>
+                <div>Amount</div>
+              </div>
+          `;
+          
+          invoice.lineItems.forEach(item => {
+            html += `
+              <div class="line-item-row">
+                <div>${item.description}</div>
+                <div>${item.quantity}</div>
+                <div>${item.unit}</div>
+                <div>${item.rate}</div>
+                <div>${item.amount}</div>
+              </div>
+            `;
+          });
+          
+          html += `</div>`;
+        }
+        
+        html += `
+          <div class="invoice-totals">
+            <strong>Total: ${total}</strong>
+          </div>
+        `;
+        
+        if (notes) {
+          html += `
+            <div style="margin-top: 10px;">
+              <strong>Notes:</strong> ${notes}
+            </div>
+          `;
+        }
+        
+        if (attachmentLinks) {
+          html += `
+            <div class="invoice-attachments">
+              <strong>Attachments:</strong>
+              <div class="attachment-links">
+          `;
+          
+          // Handle both old format (file names) and new format (Google Drive links)
+          const links = attachmentLinks.split(',').map(link => link.trim()).filter(link => link);
+          links.forEach(link => {
+            if (link.startsWith('http')) {
+              // Google Drive link
+              const fileName = link.includes('drive.google.com') ? 'Google Drive File' : link.split('/').pop();
+              html += `<a href="${link}" target="_blank" class="attachment-link">📄 ${fileName}</a>`;
+            } else {
+              // Just file name (old format)
+              html += `<span class="attachment-link">📄 ${link}</span>`;
+            }
+          });
+          
+          html += `
+              </div>
+            </div>
+          `;
+        }
+        
+        html += `</div>`;
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    // Client and Project management
+    async function loadClientProjectData() {
+      try {
+        const [clientsResponse, projectsResponse] = await Promise.all([
+          makeGoogleSheetsRequest('getClients'),
+          makeGoogleSheetsRequest('getProjects')
+        ]);
+        
+        if (clientsResponse.status === 'success') {
+          clients = clientsResponse.data || [];
+          populateClientDropdown();
+        }
+        
+        if (projectsResponse.status === 'success') {
+          projects = projectsResponse.data || [];
+        }
+        
+      } catch (error) {
+        console.error('Error loading client/project data:', error);
+      }
+    }
+    
+    function populateClientDropdown() {
+      const clientSelect = document.getElementById('selectedClient');
+      if (!clientSelect) return;
+      
+      const currentValue = clientSelect.value;
+      
+      clientSelect.innerHTML = '<option value="">Choose a client...</option>';
+      
+      clients.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client.id;
+        option.textContent = client.name;
+        clientSelect.appendChild(option);
+      });
+      
+      // Restore selected value if it still exists
+      if (currentValue && clients.find(c => c.id === currentValue)) {
+        clientSelect.value = currentValue;
+        onClientSelected(); // Trigger project loading
+      }
+    }
+    
+    function populateProjectDropdown(clientId) {
+      const projectSelect = document.getElementById('selectedProject');
+      if (!projectSelect) return;
+      
+      projectSelect.innerHTML = '<option value="">Choose a project...</option>';
+      
+      const clientProjects = projects.filter(p => p.clientId === clientId);
+      clientProjects.forEach(project => {
+        const option = document.createElement('option');
+        option.value = project.id;
+        option.textContent = project.name;
+        projectSelect.appendChild(option);
+      });
+    }
+    
+    function onClientSelected() {
+      const clientSelect = document.getElementById('selectedClient');
+      if (!clientSelect) return;
+      
+      const clientId = clientSelect.value;
+      
+      if (clientId) {
+        populateProjectDropdown(clientId);
+        updateClientProjectInfo();
+      } else {
+        const projectSelect = document.getElementById('selectedProject');
+        if (projectSelect) {
+          projectSelect.innerHTML = '<option value="">Choose a project...</option>';
+        }
+        const infoDiv = document.getElementById('clientProjectInfo');
+        if (infoDiv) {
+          infoDiv.style.display = 'none';
+        }
+      }
+    }
+    
+    function onProjectSelected() {
+      updateClientProjectInfo();
+    }
+    
+    function updateClientProjectInfo() {
+      const clientSelect = document.getElementById('selectedClient');
+      const projectSelect = document.getElementById('selectedProject');
+      const infoDiv = document.getElementById('clientProjectInfo');
+      const clientInfoDiv = document.getElementById('clientInfo');
+      const projectInfoDiv = document.getElementById('projectInfo');
+      
+      if (!clientSelect || !infoDiv) return;
+      
+      const clientId = clientSelect.value;
+      const projectId = projectSelect ? projectSelect.value : '';
+      
+      if (!clientId) {
+        infoDiv.style.display = 'none';
+        return;
+      }
+      
+      const client = clients.find(c => c.id === clientId);
+      const project = projects.find(p => p.id === projectId);
+      
+      let clientHtml = '';
+      let projectHtml = '';
+      
+      if (client) {
+        clientHtml = `
+          <h4>👤 Client Information</h4>
+          <p><strong>Name:</strong> ${client.name}</p>
+          <p><strong>Contact:</strong> ${client.contact || 'N/A'}</p>
+          <p><strong>Email:</strong> ${client.email || 'N/A'}</p>
+          <p><strong>Phone:</strong> ${client.phone || 'N/A'}</p>
+          <p><strong>Address:</strong> ${client.address || 'N/A'}</p>
+        `;
+      }
+      
+      if (project) {
+        projectHtml = `
+          <h4>🏗️ Project Information</h4>
+          <p><strong>Name:</strong> ${project.name}</p>
+          <p><strong>Address:</strong> ${project.address || 'N/A'}</p>
+          <p><strong>Description:</strong> ${project.description || 'N/A'}</p>
+        `;
+      }
+      
+      if (clientInfoDiv) clientInfoDiv.innerHTML = clientHtml;
+      if (projectInfoDiv) projectInfoDiv.innerHTML = projectHtml;
+      
+      infoDiv.style.display = clientHtml ? 'block' : 'none';
+    }
+    
+    // Line item management
+    function addLineItem() {
+      const lineItems = document.getElementById('lineItems');
+      if (!lineItems) return;
+      
+      const newItem = document.createElement('div');
+      newItem.className = 'line-item';
+      newItem.innerHTML = `
+        <input type="text" name="itemDescription[]" placeholder="Description of work/item" required>
+        <input type="number" name="itemQuantity[]" placeholder="Qty" min="0" step="0.01" required>
+        <select name="itemUnit[]" required>
+          <option value="hrs">Hours</option>
+          <option value="days">Days</option>
+          <option value="items">Items</option>
+          <option value="m²">Square Meters</option>
+          <option value="m">Meters</option>
+        </select>
+        <input type="number" name="itemRate[]" placeholder="Rate" min="0" step="0.01" required>
+        <input type="number" name="itemAmount[]" placeholder="Amount" readonly class="item-amount">
+        <button type="button" class="remove-item" onclick="removeItem(this)">×</button>
+      `;
+      lineItems.appendChild(newItem);
+      attachCalculationListeners(newItem);
+    }
+
+    function removeItem(button) {
+      const lineItems = document.getElementById('lineItems');
+      if (!lineItems) return;
+      
+      if (lineItems.children.length > 1) {
+        button.parentElement.remove();
+        calculateTotals();
+      }
+    }
+
+    function attachCalculationListeners(item) {
+      const qtyInput = item.querySelector('input[name="itemQuantity[]"]');
+      const rateInput = item.querySelector('input[name="itemRate[]"]');
+      
+      if (qtyInput) qtyInput.addEventListener('input', () => calculateItemAmount(item));
+      if (rateInput) rateInput.addEventListener('input', () => calculateItemAmount(item));
+    }
+
+    function calculateItemAmount(item) {
+      const qty = parseFloat(item.querySelector('input[name="itemQuantity[]"]').value) || 0;
+      const rate = parseFloat(item.querySelector('input[name="itemRate[]"]').value) || 0;
+      const amount = qty * rate;
+      
+      const amountInput = item.querySelector('.item-amount');
+      if (amountInput) {
+        amountInput.value = amount.toFixed(2);
+      }
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      const amounts = document.querySelectorAll('.item-amount');
+      let subtotal = 0;
+      
+      amounts.forEach(amount => {
+        subtotal += parseFloat(amount.value) || 0;
+      });
+      
+      const taxRateInput = document.getElementById('taxRate');
+      const taxRate = taxRateInput ? parseFloat(taxRateInput.value) || 0 : 0;
+      const taxAmount = subtotal * (taxRate / 100);
+      const total = subtotal + taxAmount;
+      
+      const subtotalElement = document.getElementById('subtotal');
+      const taxAmountElement = document.getElementById('taxAmount');
+      const totalElement = document.getElementById('total');
+      
+      if (subtotalElement) subtotalElement.textContent = `£${subtotal.toFixed(2)}`;
+      if (taxAmountElement) taxAmountElement.textContent = `£${taxAmount.toFixed(2)}`;
+      if (totalElement) totalElement.textContent = `£${total.toFixed(2)}`;
+    }
+    
+    // Page initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set default invoice date and number
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('invoiceDate').value = today;
+      document.getElementById('invoiceNumber').value = generateInvoiceNumber();
+      
+      // Attach calculation listeners to the first line item
+      const firstLineItem = document.querySelector('.line-item');
+      if (firstLineItem) {
+        attachCalculationListeners(firstLineItem);
+      }
+      
+      // Refresh history button
+      document.getElementById('refreshHistory').addEventListener('click', loadInvoiceHistory);
+      
+      // Load client and project data
+      loadClientProjectData();
+    });
+
+    // Form submission - Modified to save as individual rows with Google Drive links
+    const form = document.getElementById("invoiceForm");
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      
+      // Validate client selection
+      const clientId = document.getElementById('selectedClient').value;
+      if (!clientId) {
+        document.getElementById("response").innerHTML = '<div class="error">❌ Please select a client before submitting the invoice.</div>';
+        return;
+      }
+      
+      const responseDiv = document.getElementById("response");
+      responseDiv.style.display = 'block';
+      responseDiv.innerHTML = '<div style="background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px;">⏳ Saving invoice...</div>';
+
+      // Disable submit button
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+
+      try {
+        // First, upload files to Google Drive
+        const files = document.getElementById('documents').files;
+        const uploadedFiles = await uploadFilesToGoogleDrive(files);
+        
+        // Create attachment links from Google Drive URLs
+        let attachmentLinks = '';
+        if (uploadedFiles.length > 0) {
+          attachmentLinks = uploadedFiles.map(file => file.shareableLink).join(', ');
+        }
+        
+        // Collect form data
+        const formData = new FormData(form);
+        
+        // Get basic invoice information
+        const invoiceNumber = formData.get('invoiceNumber');
+        const invoiceDate = formData.get('invoiceDate');
+        const dueDate = formData.get('dueDate');
+        const selectedClient = clients.find(c => c.id === clientId);
+        const clientName = selectedClient ? selectedClient.name : 'Unknown Client';
+        const selectedProject = projects.find(p => p.id === formData.get('selectedProject'));
+        const projectName = selectedProject ? selectedProject.name : 'No Project';
+        const notes = formData.get('notes') || '';
+        const taxRate = parseFloat(formData.get('taxRate')) || 0;
+        
+        // Get line items
+        const descriptions = formData.getAll('itemDescription[]');
+        const quantities = formData.getAll('itemQuantity[]');
+        const units = formData.getAll('itemUnit[]');
+        const rates = formData.getAll('itemRate[]');
+        const amounts = formData.getAll('itemAmount[]');
+        
+        // Calculate totals
+        let subtotal = 0;
+        amounts.forEach(amount => {
+          subtotal += parseFloat(amount) || 0;
+        });
+        const taxAmount = subtotal * (taxRate / 100);
+        const total = subtotal + taxAmount;
+        
+        // Save each line item as a separate row with complete invoice information
+        const savePromises = [];
+        
+        for (let i = 0; i < descriptions.length; i++) {
+          if (descriptions[i].trim()) {
+            const invoiceRowData = {
+              action: 'saveInvoice',
+              timestamp: new Date().toISOString(),
+              invoiceNumber: invoiceNumber,
+              invoiceDate: invoiceDate,
+              dueDate: dueDate,
+              clientName: clientName,
+              description: descriptions[i],
+              quantity: quantities[i],
+              unit: units[i],
+              hrs: units[i] === 'hrs' ? quantities[i] : '', // hrs field for when unit is hours
+              rate: rates[i],
+              amount: amounts[i],
+              subtotal: `£${subtotal.toFixed(2)}`,
+              taxAmount: `£${taxAmount.toFixed(2)}`,
+              total: `£${total.toFixed(2)}`,
+              notes: notes,
+              attachmentLinks: attachmentLinks,
+              projectName: projectName
+            };
+            
+            savePromises.push(makeGoogleSheetsRequest('saveInvoice', invoiceRowData));
+          }
+        }
+        
+        // If no line items, save at least one row with invoice header information
+        if (savePromises.length === 0) {
+          const invoiceRowData = {
+            action: 'saveInvoice',
+            timestamp: new Date().toISOString(),
+            invoiceNumber: invoiceNumber,
+            invoiceDate: invoiceDate,
+            dueDate: dueDate,
+            clientName: clientName,
+            description: '',
+            quantity: '',
+            unit: '',
+            hrs: '',
+            rate: '',
+            amount: '',
+            subtotal: `£${subtotal.toFixed(2)}`,
+            taxAmount: `£${taxAmount.toFixed(2)}`,
+            total: `£${total.toFixed(2)}`,
+            notes: notes,
+            attachmentLinks: attachmentLinks,
+            projectName: projectName
+          };
+          
+          savePromises.push(makeGoogleSheetsRequest('saveInvoice', invoiceRowData));
+        }
+        
+        // Wait for all rows to be saved
+        const results = await Promise.all(savePromises);
+        
+        // Check if all saves were successful
+        const allSuccessful = results.every(result => result.status === 'success');
+        
+        if (allSuccessful) {
+          responseDiv.innerHTML = '<div class="response success">✅ Invoice saved successfully with Google Drive attachments!</div>';
+          
+          // Reset form
+          form.reset();
+          document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+          document.getElementById('invoiceNumber').value = generateInvoiceNumber();
+          document.getElementById('clientProjectInfo').style.display = 'none';
+          document.getElementById('uploadedFiles').innerHTML = '';
+          uploadedGoogleDriveFiles = [];
+          calculateTotals();
+          
+          // Refresh invoice history if on that tab
+          if (document.getElementById('historyTab').classList.contains('active')) {
+            loadInvoiceHistory();
+          }
+        } else {
+          responseDiv.innerHTML = '<div class="response error">❌ Some invoice rows failed to save. Please check and try again.</div>';
+        }
+        
+      } catch (error) {
+        console.error('Error saving invoice:', error);
+        responseDiv.innerHTML = `<div class="response error">❌ Error saving invoice: ${error.message}</div>`;
+      } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = '💾 Save Invoice';
+      }
+    });
+  </script>
+</body>
+</html>
